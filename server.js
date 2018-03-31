@@ -6,6 +6,9 @@ var User = require('./Users');
 var Movie = require('./Movies');
 var Review = require('./Reviews');
 var jwt = require('jsonwebtoken');
+var mongoose = require('mongoose');
+
+db = mongoose.createConnection(process.env.DB);
 
 var app = express();
 app.use(bodyParser.json());
@@ -124,17 +127,18 @@ router.route('/movies/:movieId')
             else
                 if(req.params.reviews === true)
                 {
-                    Movie.movie.aggregate([
+                        const moviePlus = db.Movie.aggregate([
                         {
                             $lookup:
                                 {
                                     from: "reviews",
-                                    localField: "movie.title",
+                                    localField: "title",
                                     foreignField: "movie",
                                     as: "review_information"
                                 }
                         }
-                    ])
+                    ]);
+                        res.json(moviePlus);
                 }
                 res.json(movie);
         });
