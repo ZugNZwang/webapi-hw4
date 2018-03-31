@@ -124,12 +124,12 @@ router.route('/movies/:movieId')
             else
                 if(req.params.reviews === true)
                 {
-                    db.movies.aggregate([
+                    Movie.movie.aggregate([
                         {
                             $lookup:
                                 {
                                     from: "reviews",
-                                    localField: "title",
+                                    localField: "movie.title",
                                     foreignField: "movie",
                                     as: "review_information"
                                 }
