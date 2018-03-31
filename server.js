@@ -127,20 +127,17 @@ router.route('/movies/:movieId')
             else
                 if(req.query.reviews === "true")
                 {
-                    Movie.aggregate([{
+                    movieWithReviews = movie.aggregate([{
                         $lookup:
                             {
-                                from: "Reviews",
+                                from: "reviews",
                                 localField: "title",
                                 foreignField: "movie",
                                 as: "review_information"
                             }
-                        }
+                    }
                     ]);
-
-                    res.json({message: 'HERE'});
-
-                    res.json(movie);
+                    res.json(movieWithReviews);
                 }
                 else
                     res.json(movie);
