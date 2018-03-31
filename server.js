@@ -128,7 +128,7 @@ router.route('/movies/:movieId')
                 if(req.query.reviews === "true")
                 {
                     res.json({message: 'HERE'});
-                    const moviePlus = movie.aggregate([{
+                    movie.aggregate([{
                         $lookup:
                             {
                                 from: "Reviews",
@@ -139,9 +139,10 @@ router.route('/movies/:movieId')
                         }
                     ]);
 
-                    res.json(moviePlus);
+                    res.json(movie);
                 }
-                res.json(movie);
+                else
+                    res.json(movie);
         });
     })
 
