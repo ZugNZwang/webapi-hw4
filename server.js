@@ -125,7 +125,7 @@ router.route('/movies/:movieId')
             if (err)
                 res.send(err);
             else
-                if(req.query.reviews === true)
+                if(req.query.reviews === "true")
                 {
                     res.json({message: 'HERE'});
                     const moviePlus = movie.aggregate([{
