@@ -4,6 +4,7 @@ var passport = require('passport');
 var authJwtController = require('./auth_jwt');
 var User = require('./Users');
 var Movie = require('./Movies');
+var Review = require('./Reviews');
 var jwt = require('jsonwebtoken');
 
 var app = express();
@@ -11,6 +12,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
+
+app.get('/', function(req, res) {
+    res.json({ message: 'Assignment 4'});
+    });
 
 var router = express.Router();
 
@@ -32,7 +37,6 @@ router.route('/users/:userId')
         User.findById(id, function(err, user) {
             if (err) res.send(err);
 
-            var userJson = JSON.stringify(user);
             // return that user
             res.json(user);
         });
@@ -118,6 +122,20 @@ router.route('/movies/:movieId')
             if (err)
                 res.send(err);
             else
+                if(req.params.reviews === true)
+                {
+                    db.movies.aggregate([
+                        {
+                            $lookup:
+                                {
+                                    from: "reviews",
+                                    localField: "title",
+                                    foreignField: "movie",
+                                    as: "review_information"
+                                }
+                        }
+                    ])
+                }
                 res.json(movie);
         });
     })
@@ -147,6 +165,34 @@ router.route('/movies/:movieId')
             res.json({ message: 'Successfully deleted' });
         });
     });
+
+router.route('/reviews')
+    .post(authJwtController.isAuthenticated, function (req, res) {
+        var reviewNew = new Review();
+
+        reviewNew.reviewer = req.body.reviewer;
+        reviewNew.movie = req.body.movie;
+        reviewNew.quote = req.body.quote;
+        reviewNew.rating = req.body.rating;
+
+        reviewNew.save(function (err) {
+            if (err) {
+                res.send(err);
+            }
+            else
+                res.json({message: 'Review created!'});
+        });
+    });
+
+router.route('/reviews/:reviewId')
+.get(authJwtController.isAuthenticated, function (req, res) {
+    Movie.findById(req.params.reviewId, function(err, review) {
+        if (err)
+            res.send(err);
+        else
+            res.json(review);
+    });
+})
 
 
 
