@@ -127,17 +127,15 @@ router.route('/movies/:movieId')
             else
                 if(req.query.reviews === "true")
                 {
-                    movieWithReviews = movie.aggregate([{
-                        $lookup:
-                            {
-                                from: "reviews",
-                                localField: "title",
-                                foreignField: "movie",
-                                as: "review_information"
-                            }
-                    }
-                    ]);
-                    res.json(movieWithReviews);
+                    Review.find(function (err, reviews) {
+                        if (err) res.send(err);
+
+                        Review.find({movie: movie.title}).exec(function(err, reviews) {
+                            if(err) res.send(err);
+
+                            res.json({movie:movie, reviews:reviews});
+                        });
+                    });
                 }
                 else
                     res.json(movie);
@@ -189,14 +187,14 @@ router.route('/reviews')
     });
 
 router.route('/reviews/:reviewId')
-.get(authJwtController.isAuthenticated, function (req, res) {
-    Movie.findById(req.params.reviewId, function(err, review) {
-        if (err)
-            res.send(err);
-        else
-            res.json(review);
-    });
-})
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        Movie.findById(req.params.reviewId, function(err, review) {
+            if (err)
+                res.send(err);
+            else
+                res.json(review);
+        });
+});
 
 
 
