@@ -105,7 +105,7 @@ router.route('/movies')
         movieNew.title = req.body.title;
         movieNew.year = req.body.year;
         movieNew.genre = req.body.genre;
-        movieNe.actors = req.body.actors;
+        movieNew.actors = req.body.actors;
 
         movieNew.save(function (err) {
             if (err) {
