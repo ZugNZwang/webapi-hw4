@@ -127,7 +127,7 @@ router.route('/movies/:movieId')
             else
                 if(req.query.reviews === "true")
                 {
-                    movie = movie.aggregate([{
+                    Movie.aggregate([{
                         $lookup:
                             {
                                 from: "Reviews",
