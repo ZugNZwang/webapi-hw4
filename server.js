@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 
 const crypto = require("crypto");
 var rp = require('request-promise');
+const got = require('got');
 
 db = mongoose.createConnection(process.env.DB);
 
@@ -55,7 +56,10 @@ function trackDimension(category, action, label, value, dimension, metric) {
         headers:
             {  'Cache-Control': 'no-cache' } };
 
-    return rp(options);
+    //return rp(options);
+    return got.post('http://www.google-analytics.com/collect', {
+        form: qs
+    });
 }
 
 var router = express.Router();
@@ -63,7 +67,7 @@ var router = express.Router();
 router.route('/test')
     .get(function (req, res) {
         // Event value must be numeric.
-        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '3', 'Star Wars: The Last Jedi', '1')
+        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars: The Last Jedi', '4')
             .then(function (response) {
                 console.log(response.body);
                 res.status(200).send('Event tracked.').end();
