@@ -28,9 +28,9 @@ const GA_TRACKING_ID = process.env.GA_KEY;
 
 function trackDimension(category, action, label, value, dimension, metric) {
 
-    var options = { method: 'GET',
+    var options = { method: 'POST',
         url: 'https://www.google-analytics.com/collect',
-        qs:
+        body:
             {   // API Version.
                 v: '1',
                 // Tracking ID / Property ID.
@@ -53,13 +53,11 @@ function trackDimension(category, action, label, value, dimension, metric) {
                 // Custom Metric
                 cm1: metric
             },
+        json: true,
         headers:
             {  'Cache-Control': 'no-cache' } };
 
-    //return rp(options);
-    return got.post('http://www.google-analytics.com/collect', {
-        form: qs
-    });
+        return rp(options);
 }
 
 var router = express.Router();
