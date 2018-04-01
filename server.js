@@ -63,7 +63,7 @@ var router = express.Router();
 router.route('/test')
     .get(function (req, res) {
         // Event value must be numeric.
-        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars', '4')
+        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '3', 'Star Wars: The Last Jedi', '1')
             .then(function (response) {
                 console.log(response.body);
                 res.status(200).send('Event tracked.').end();
