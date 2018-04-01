@@ -66,21 +66,10 @@ function trackDimension(category, action, label, value, dimension, metric) {
 var router = express.Router();
 
 router.route('/test')
-    .post(function (req, res) {
+    .get(function (req, res) {
         // Event value must be numeric.
-        var dimension = req.body.dimension;
-        var metric = req.body.metric;
-
-        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', dimension, metric)
-            .then(function (response) {
-                console.log(response.body);
-                res.status(200).send('Event tracked.').end();
-            })
-    });
-
-router.route('/ga')
-    .post(function (req, res) {
-        // Event value must be numeric.
+        //var dimension = req.body.dimension;
+        //var metric = req.body.metric;
         trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars: The Last Jedi', '4')
             .then(function (response) {
                 console.log(response.body);
