@@ -28,9 +28,10 @@ const GA_TRACKING_ID = process.env.GA_KEY;
 
 function trackDimension(category, action, label, value, dimension, metric) {
 
-    var options = { method: 'GET',
-        url: 'https://www.google-analytics.com/collect',
-        qs:
+    //var options = { method: 'GET',
+       // url: 'https://www.google-analytics.com/collect',
+        //qs:
+    const data =
             {   // API Version.
                 v: '1',
                 // Tracking ID / Property ID.
@@ -52,26 +53,32 @@ function trackDimension(category, action, label, value, dimension, metric) {
                 cd1: dimension,
                 // Custom Metric
                 cm1: metric
-            },
-        headers:
-            {  'Cache-Control': 'no-cache' } };
+            };
+        //headers:
+          //  {  'Cache-Control': 'no-cache' } };
 
-        return rp(options);
+        //return rp(options);
+    return got.post('http://www.google-analytics.com/collect', {
+        form: data
+    });
 }
 
 var router = express.Router();
 
 router.route('/test')
-    .get(function (req, res) {
+    .post(function (req, res) {
         // Event value must be numeric.
-        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars: The Last Jedi', '4')
+        var dimension = req.body.dimension;
+        var metric = req.body.metric;
+
+        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', dimension, metric)
             .then(function (response) {
                 console.log(response.body);
                 res.status(200).send('Event tracked.').end();
             })
     });
 
-router.route('/test')
+router.route('/ga')
     .post(function (req, res) {
         // Event value must be numeric.
         trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars: The Last Jedi', '4')
