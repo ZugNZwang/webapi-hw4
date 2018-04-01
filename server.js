@@ -28,10 +28,9 @@ const GA_TRACKING_ID = process.env.GA_KEY;
 
 function trackDimension(category, action, label, value, dimension, metric) {
 
-    //var options = { method: 'GET',
-       // url: 'https://www.google-analytics.com/collect',
-        //qs:
-    const data =
+    var options = { method: 'GET',
+        url: 'https://www.google-analytics.com/collect',
+        qs:
             {   // API Version.
                 v: '1',
                 // Tracking ID / Property ID.
@@ -53,14 +52,11 @@ function trackDimension(category, action, label, value, dimension, metric) {
                 cd1: dimension,
                 // Custom Metric
                 cm1: metric
-            };
-        //headers:
-          //  {  'Cache-Control': 'no-cache' } };
+            },
+        headers:
+            {  'Cache-Control': 'no-cache' } };
 
-        //return rp(options);
-    return got.post('http://www.google-analytics.com/collect', {
-        form: data
-    });
+        return rp(options);
 }
 
 var router = express.Router();
@@ -68,8 +64,6 @@ var router = express.Router();
 router.route('/test')
     .get(function (req, res) {
         // Event value must be numeric.
-        //var dimension = req.body.dimension;
-        //var metric = req.body.metric;
         trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars: The Last Jedi', '4')
             .then(function (response) {
                 console.log(response.body);
