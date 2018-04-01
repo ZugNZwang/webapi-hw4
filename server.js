@@ -8,41 +8,6 @@ var Review = require('./Reviews');
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
 
-const GA_TRACKING_ID = process.env.GA_KEY;
-
-function trackDimension(category, action, label, value, dimension, metric) {
-    var options = { method: 'GET',
-        url: 'https://www.google-analytics.com/collect',
-        qs:
-            {
-                // API VERSION
-                v: '1',
-                // Tracking ID / Property ID
-                tid: GA_TRACKING_ID,
-                // Random Client Identifier. Ideally this should be a UUID that
-                // is associated w/ particular user, device, or browser instance
-                cid: crypto.randomBytes(16).toString("hex"),
-                // Event hit type
-                t: 'event',
-                // Event category
-                ec: category,
-                // Event action
-                ea: action,
-                // Event label
-                el: label,
-                // Event value
-                ev: value,
-                // Custom dimension
-                cd1: dimension,
-                // Custom metric
-                cm1: metric
-            },
-        headers:
-            { 'Cache-Control': 'no-cache'} };
-
-    return rp(options);
-}
-
 db = mongoose.createConnection(process.env.DB);
 
 var app = express();
@@ -223,26 +188,13 @@ router.route('/reviews')
 
 router.route('/reviews/:reviewId')
     .get(authJwtController.isAuthenticated, function (req, res) {
-        Movie.findById(req.params.reviewId, function(err, review) {
+        Review.findById(req.params.reviewId, function(err, review) {
             if (err)
                 res.send(err);
             else
                 res.json(review);
         });
 });
-
-router.route('/test')
-    .get(function (req, res) {
-        // Event value must be numeric.
-        trackDimension('Feedback', 'Rating', 'Feedback for Movie', '1', 'Star Wars: The Last Jedi', '1')
-            .then(function (response) {
-                console.log(response.body);
-                res.status(200).send('Event tracked.').end();
-            })
-    });
-
-
-
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
