@@ -7,6 +7,7 @@ var Movie = require('./Movies');
 var Review = require('./Reviews');
 var jwt = require('jsonwebtoken');
 var mongoose = require('mongoose');
+var cors = require('cors');
 
 const crypto = require("crypto");
 var rp = require('request-promise');
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
+app.use(cors());
 
 app.get('/', function(req, res) {
     res.json({ message: 'Assignment 4'});
