@@ -152,7 +152,7 @@ router.post('/signin', function(req, res) {
 });
 
 
-router.route('/movies')
+router.route('/movie')
     .post(authJwtController.isAuthenticated, function (req, res) {
         var movieNew = new Movie();
 
@@ -160,6 +160,7 @@ router.route('/movies')
         movieNew.year = req.body.year;
         movieNew.genre = req.body.genre;
         movieNew.actors = req.body.actors;
+        movieNew.image = req.body.image;
 
         movieNew.save(function (err) {
             if (err) {
@@ -170,7 +171,17 @@ router.route('/movies')
         });
     });
 
-router.route('/movies/:movieId')
+router.route('/movies')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        Movie.find(function (err, movies) {
+            if (err)
+                res.send(err);
+            else
+                res.json(movies);
+        });
+    });
+
+router.route('/movie/:movieId')
     .get(authJwtController.isAuthenticated, function (req, res) {
         Movie.findById(req.params.movieId, function(err, movie) {
             if (err)
@@ -201,6 +212,7 @@ router.route('/movies/:movieId')
                 if (req.body.year) movie.year = req.body.year;
                 if (req.body.genre) movie.genre = req.body.genre;
                 if (req.body.actors) movie.actors = req.body.actors;
+                if (req.body.image) movie.image = req.body.image;
             }
 
             movie.save(function(err) {
