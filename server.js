@@ -189,15 +189,26 @@ router.route('/movie/:movieId')
             else
                 if(req.query.reviews === "true")
                 {
-                    Review.find(function (err, reviews) {
-                        if (err) res.send(err);
-
-                        Review.find({movie: movie.title}).exec(function(err, reviews) {
-                            if(err) res.send(err);
-
-                            res.json({movie:movie, reviews:reviews});
-                        });
-                    });
+                    Movie.aggregate([
+                        {
+                            $match: {
+                                _id: mongoose.Types.ObjectId(req.params.movieId)
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: "reviews",
+                                localField: "title",
+                                foreignField: "movie",
+                                as: "reviews"
+                            }
+                        }
+                    ]).exec(function (err, reviews) {
+                        if(err)
+                            res.send(err);
+                        else
+                            res.send(reviews);
+                    })
                 }
                 else
                     res.json(movie);
